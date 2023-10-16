@@ -1,0 +1,25 @@
+{
+    "name": "vendor/gaijinmall",
+    "description": "Gaijinmall is a classified online store, customers buy or sell from each other. Project was done for a company in japan by Digitanotion Systems",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Digitanotions Devteam",
+            "email": "hello@digitanotion.com.ng"
+        }
+        
+    ],
+    "autoload": {
+		"psr-4": {
+			"services\\": "services/",
+            "root\\": "Gaijinmall",
+            "Tmps\\": "tmp",
+            "Secure\\": "tmp/secure"
+		}
+	},
+    "require": {
+        "phpmailer/phpmailer": "^6.6",
+        "samayo/bulletproof": "4.0.*"
+    }
+    
+}
