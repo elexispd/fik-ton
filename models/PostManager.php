@@ -25,11 +25,11 @@ class PostManager
         $this->dbHandler = new InitDB();
     }
 
-    public function createPost($title, $content, $thumbnail, $videoLink, $author) {
-        $sql = "INSERT INTO posts (title, content, thumbnail, video_link, author, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";       
+    public function createPost($title, $content, $thumbnail, $videoLink, $author, $genre, $trending) {
+        $sql = "INSERT INTO posts (title, content, thumbnail, video_link, author, genre, is_trending, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";       
         try {
             $date = time();
-            $stmt = $this->dbHandler->run($sql, [$title, $content, $thumbnail, $videoLink, $author, 1, $date]);         
+            $stmt = $this->dbHandler->run($sql, [$title, $content, $thumbnail, $videoLink, $author,  $genre, $trending, 1, $date]);         
             if($stmt->rowCount() > 0) {
                 return true; // Registration successful
             } else {
@@ -83,11 +83,11 @@ class PostManager
         }
     }
 
-    public function updatePost($title, $content, $thumbnail, $videoLink, $author, $id) {
+    public function updatePost($title, $content, $thumbnail, $videoLink, $author,  $genre, $trending, $id) {
         $date = time();
-        $sql = "UPDATE posts SET title = ?, content = ?, thumbnail = ?, video_link = ?, author = ?, updated_at = ?  WHERE id = ?";
+        $sql = "UPDATE posts SET title = ?, content = ?, thumbnail = ?, video_link = ?, author = ?,  genre = ?, is_trending = ?, updated_at = ?  WHERE id = ?";
         try {
-            $stmt = $this->dbHandler->run($sql, [$title, $content, $thumbnail, $videoLink, $author, $date, $id]);
+            $stmt = $this->dbHandler->run($sql, [$title, $content, $thumbnail, $videoLink, $author,  $genre, $trending, $date, $id]);
             if($stmt) {
                return true;
             } else {
@@ -97,6 +97,34 @@ class PostManager
             // Return the database error message
             return "Database Error: " . $e->getMessage();
         }    
+    }
+
+    public function getPostByGenre($genre) {
+        $sql = "SELECT * FROM posts WHERE genre = ?";
+        try {
+            $stmt = $this->dbHandler->run($sql, [$genre]);
+            if($stmt->rowCount() > 0 ) {
+                return $stmt->fetchAll();
+            } else {
+                return false;
+            }
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
+    }
+
+    public function getRecentPosts() {
+        $sql = "SELECT * FROM posts ORDER BY create_at DESC";
+        try {
+            $stmt = $this->dbHandler->run($sql);
+            if($stmt->rowCount() > 0 ) {
+                return $stmt->fetchAll();
+            } else {
+                return false;
+            }
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
     }
 
     function message($key, $value)
@@ -115,7 +143,7 @@ class PostManager
 $test = new PostManager();
 //  $output = $test->getPost(1);
 //  print_r($output);
-//$output = $test->createPost("Hello world", "lorem PostManager PostManager PostManager ", 'dfjkhjh23h4k2', "video", "Dfads");
+//$output = $test->createPost("Hello world", "lorem PostManager PostManager PostManager ", 'dfjkhjh23h4k2', "video", "Dfads", "action", 2);
 //$output = $test->updatePost("Hello update", "lorem PostManager PostManager PostManager ", 'dfjkhjh23h4k2', "video", "Dfads", 2);
 // $output = $test->deletePost(1);
 //echo $output ? "true" : "false";
