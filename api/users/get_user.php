@@ -8,18 +8,18 @@ $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_POST["email"]) && isset($_POST["password"])) {
+    if(isset($_POST["email"])) {
         $email = htmlspecialchars($_POST["email"]);
-        $password = $_POST["password"];
-        if(empty($email) || empty($password)) {
-            $response = ["status" => 101, "message" => "All fields are required"];
+        if(empty($email)) {
+            $response = ["status" => 101, "message" => "Email must not be empty"];
         } else {
             $account_obj = new AccountManager;
-            if($account_obj->changePassword($email, $password) ) {
+            if($account_obj->getUser($email) != false) {
                 $response = ["status" => 201,
-                     "message" => "password was changed successfully"];
+                     "message" => "successful", 
+                     "data" => $account_obj->getUser($email)];
             } else {
-                $response = ["status" => 100, "message" => "Password could not be changed"];
+                $response = ["status" => 100, "message" => "User does not exist"];
             }
         }
     } else {

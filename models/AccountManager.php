@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 //Confirm if file is local or Public and add the right path
 
 require_once(__DIR__ . "/../vendor/autoload.php");
@@ -28,7 +28,7 @@ class AccountManager
     }
 
     public function getAllUsers() {
-        $sql = "SELECT * FROM users WHERE is_admin <> 1";
+        $sql = "SELECT id, email gender, phone, username, created_at FROM users WHERE is_admin <> 1";
         try {
             $stmt = $this->dbHandler->run($sql);
             if($stmt->rowCount() > 0 ) {
@@ -42,12 +42,12 @@ class AccountManager
     }
     public function getUsers() {
         try {
-            $sql = "SELECT * FROM users WHERE is_admin = 0";
+            $sql = "SELECT id, email gender, phone, username, created_at FROM users WHERE is_admin = 0";
             $stmt = $this->dbHandler->run($sql);
             if($stmt->rowCount() > 0 ) {
                 return $stmt->fetchAll();
             } else {
-                return "nothing";
+                return false;
             }
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
@@ -56,7 +56,7 @@ class AccountManager
     }
     
     public function getAllSubAdmins() {
-        $sql = "SELECT * FROM users WHERE is_admin <> 2";
+        $sql = "SELECT id, email gender, phone, username, created_at FROM users WHERE is_admin = 2";
         try {
             $stmt = $this->dbHandler->run($sql);
             if($stmt->rowCount() > 0 ) {
@@ -70,9 +70,9 @@ class AccountManager
     }
 
     public function getUser($email) {   
-        $sql = "SELECT * FROM users WHERE email = ? || username = ?";  
+        $sql = "SELECT  FROM users WHERE email = ? || username = ?";  
         try {  
-            $stmt = $this->dbHandler->run($sql, [$email]);
+            $stmt = $this->dbHandler->run($sql, [$email, $email]);
             if($stmt->rowCount() > 0) {
                 return $stmt->fetchAll();
             } else  {
@@ -93,7 +93,7 @@ class AccountManager
             } else {
                 return false;
             }
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             // Return the database error message
             return "Database Error: " . $e->getMessage();
         }     
@@ -102,11 +102,6 @@ class AccountManager
 
 
 
-    function message($key, $value)
-    {
-        $this->system_message['status'] = $key;
-        $this->system_message['message'] = $value;
-    }
 
     
 
@@ -116,10 +111,3 @@ class AccountManager
 
 /*  unit test  */
 
-$test = new Accountmanager();
-// $output = $test->getAllUsers();
-$output = $test->changePassword("abc@a.com", "hello");
-
-//print_r($output);
-
-echo $output ? "true" : "false";

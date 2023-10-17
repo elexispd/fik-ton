@@ -18,7 +18,7 @@ class InitDB{
 
         try {
             $this->dbConnect = new \PDO($dsn, $this->username, $this->password);
-            return $this->dbConnect;
+            $this->dbConnect->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         } catch (\PDOException $e) {
             //SEND THIS TO AUDIT SERVICE FOR LOGGING
         }

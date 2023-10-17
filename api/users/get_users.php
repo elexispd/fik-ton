@@ -9,7 +9,7 @@ $response = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
     $account_obj = new AccountManager;
-    if($account_obj->getAllSubAdmins() != false) {
+    if($account_obj->getUsers() != false) {
         $response = ["status" => 201,
                      "message" => "successful", 
                      "data" => $account_obj->getAllUsers()];
