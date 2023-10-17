@@ -36,7 +36,7 @@ class Auth
             if($stmt->rowCount() > 0) {
                 return true; // Registration successful
             } else {
-                return fals; // Registration failed
+                return false; // Registration failed
             }
         } catch (PDOException $e) {
             // Return the database error message
