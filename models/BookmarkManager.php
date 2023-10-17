@@ -13,7 +13,7 @@ require_once(__DIR__ . "/InitDB.php");
 
 
 
-class LikeManager
+class BookmarkManager
 {
 
     private $dbHandler;
@@ -25,8 +25,8 @@ class LikeManager
         $this->dbHandler = new InitDB();
     }
 
-    public function createLike($user_id, $post_id) {
-        $sql = "INSERT INTO likes (user_id, post_id, created_at) VALUES (?, ?, ?)";       
+    public function createBookmark($user_id, $post_id) {
+        $sql = "INSERT INTO bookmark (user_id, post_id, created_at) VALUES (?, ?, ?)";       
         try {
             $date = time();
             $stmt = $this->dbHandler->run($sql, [$user_id, $post_id, $date]);         
@@ -42,8 +42,8 @@ class LikeManager
     }
 
     
-    public function deleteLike($user_id, $post_id) {
-        $sql = "DELETE FROM likes WHERE user_id = ? AND post_id = ?";
+    public function deleteBookmark($user_id, $post_id) {
+        $sql = "DELETE FROM bookmark WHERE user_id = ? AND post_id = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$user_id, $post_id]);
             if($stmt->rowCount() > 0 ) {
@@ -56,8 +56,8 @@ class LikeManager
         }
     }
 
-    public function isLiked($user_id, $post_id) {
-        $sql = "SELECT * FROM likes WHERE user_id = ? AND post_id = ?";
+    public function isBookmarked($user_id, $post_id) {
+        $sql = "SELECT * FROM bookmark WHERE user_id = ? AND post_id = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$user_id, $post_id]);
             if($stmt->rowCount() > 0 ) {
@@ -85,8 +85,8 @@ class LikeManager
 
 /*  unit test  */
 
-$test = new LikeManager();
-//$output = $test->createLike(1,2);
-// $output = $test->deleteLike(1, 2);
-//$output = $test->deleteLike(1, 2);
-//echo $output ? "true" : "false";
+$test = new BookmarkManager();
+//$output = $test->createBookmark(1,2);
+// $output = $test->deleteBookmark(1, 2);
+// $output = $test->isBookmarked(1, 2);
+//  echo $output ? "true" : "false";
