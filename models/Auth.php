@@ -70,22 +70,22 @@ class Auth
             } else {
                 return false;
             }
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             // Return the database error message
             return "Database Error: " . $e->getMessage();
         }
         
     }
 
-    public function createToken($email) {
+    public function createToken($email, $token) {
         $sql = "INSERT INTO token_verify (email, token, created_at) VALUES (?, ?, ?)";       
         try {
             $date = time();
             $stmt = $this->dbHandler->run($sql, [$email, $token, $date]);         
             if($stmt->rowCount() > 0) {
-                return true; // Registration successful
+                return true; 
             } else {
-                return false; // Registration failed
+                return false; 
             }
         } catch (PDOException $e) {
             // Return the database error message
@@ -93,7 +93,7 @@ class Auth
         }
     }
 
-    public function verifyTokenURL($email, $token) {
+    public function verifyToken($email, $token) {
         $sql = "SELECT * token_verify WHERE email = ? && token = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$email, $token]);

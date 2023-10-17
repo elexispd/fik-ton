@@ -70,6 +70,20 @@ class BookmarkManager
         }
     }
 
+    public function Bookmarked($user_id) {
+        $sql = "SELECT * FROM bookmark WHERE user_id = ?";
+        try {
+            $stmt = $this->dbHandler->run($sql, [$user_id]);
+            if($stmt->rowCount() > 0 ) {
+                return $stmt->fetchAll();
+            } else {
+                return false;
+            }
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
+    }
+
    
 
     function message($key, $value)
