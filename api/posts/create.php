@@ -29,7 +29,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = ["status" => 201,
                      "message" => "post created successfully"];
             } else {
-                $response = ["status" => 100, "message" => "Post could not be deleted"];
+                $response = ["status" => 100, "message" => "Post could not be created"];
             }
         }
     } else {

@@ -51,7 +51,7 @@ class NotifyManager
         }
     }
 
-    public function getNotications($id) {
+    public function getNotication($id) {
         $sql = "SELECT * FROM notifications WHERE id = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$id]);
