@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
     if($account_obj->getUsers() != false) {
         $response = ["status" => 201,
                      "message" => "successful", 
-                     "data" => $account_obj->getAllUsers()];
+                     "data" => $account_obj->getUsers()];
     } else {
         $response = ["status" => 100, "message" => "No data to return"];
     }

@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 //Confirm if file is local or Public and add the right path
 
 require_once(__DIR__ . "/../vendor/autoload.php");
@@ -132,7 +132,7 @@ class PostManager
         $sql = "SELECT * FROM posts";
         try {
             $stmt = $this->dbHandler->run($sql);
-            return $stmt->rewCount();
+            return $stmt->rowCount();
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
         }
