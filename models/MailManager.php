@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 
 require_once(__DIR__ . "/../vendor/autoload.php");
 
@@ -255,10 +256,10 @@ class MailManager{
 }
 
 
-$output = new MailManager();
+// $output = new MailManager();
 
-$a = "<h5 style='font-size: 200%;' >Hello, </h5> <p style='font-size: 150%;'>Your Verification token is </p> <h4 style='font-size: 250%;'>123456</h4>";
+// $a = "<h5 style='font-size: 200%;' >Hello, </h5> <p style='font-size: 150%;'>Your Verification token is </p> <h4 style='font-size: 250%;'>123456</h4>";
 
-$result = $output->sendMail("promisedeco24@gmail.com", "promisedeco24@gmail.com", "Testing Notoification", $a );
+// $result = $output->sendMail("promisedeco24@gmail.com", "promisedeco24@gmail.com", "Testing Notoification", $a );
 
-echo $result;
+// echo $result;

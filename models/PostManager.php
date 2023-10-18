@@ -125,14 +125,20 @@ class PostManager
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
         }
+        
     }
 
-    function message($key, $value)
-    {
-        $this->system_message['status'] = $key;
-        $this->system_message['message'] = $value;
+    public function totalPosts() {
+        $sql = "SELECT * FROM posts";
+        try {
+            $stmt = $this->dbHandler->run($sql);
+            return $stmt->rewCount();
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
     }
 
+   
 
 
 

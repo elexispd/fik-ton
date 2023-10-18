@@ -1,8 +1,5 @@
 <?php
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-//Confirm if file is local or Public and add the right path
+
 
 require_once(__DIR__ . "/../vendor/autoload.php");
 
@@ -70,7 +67,7 @@ class AccountManager
     }
 
     public function getUser($email) {   
-        $sql = "SELECT  FROM users WHERE email = ? || username = ?";  
+        $sql = "SELECT id, email gender, phone, username, created_at  FROM users WHERE email = ? || username = ?";  
         try {  
             $stmt = $this->dbHandler->run($sql, [$email, $email]);
             if($stmt->rowCount() > 0) {
@@ -97,6 +94,16 @@ class AccountManager
             // Return the database error message
             return "Database Error: " . $e->getMessage();
         }     
+    }
+
+    public function totalUsers() {
+        $sql = "SELECT id, email gender, phone, username, created_at FROM users WHERE is_admin <> 1";
+        try {
+            $stmt = $this->dbHandler->run($sql);
+            return $stmt->rowCount();
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
     }
     
 

@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 //Confirm if file is local or Public and add the right path
 
-require_once(__DIR__ . "/../vendor/autoload.php");
+require_once(__DIR__ . "/MailManager.php");
 
 require_once(__DIR__ . "/InitDB.php");
 
@@ -29,7 +29,8 @@ class NotifyManager
             if($stmt->rowCount() > 0) {
                 return true; 
             } else {
-                return false;             }
+                return false;             
+            }
         } catch (PDOException $e) {
             // Return the database error message
             return "Database Error: " . $e->getMessage();
@@ -64,6 +65,16 @@ class NotifyManager
         }
     }
 
+    public function totalNotications() {
+        $sql = "SELECT * FROM notifications";
+        try {
+            $stmt = $this->dbHandler->run($sql);
+                return $stmt->rowCount();
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
+    }
+
     public function deleteNotification($id) {
         $sql = "DELETE FROM notifications WHERE id = ?";
         try {
@@ -87,4 +98,5 @@ class NotifyManager
 $test = new NotifyManager();
 //  $output = $test->createNotification("New Show", "testing notify", 1);
 
-// echo $output ? "true" : "false";
+
+

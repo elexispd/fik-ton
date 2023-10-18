@@ -84,14 +84,17 @@ class BookmarkManager
         }
     }
 
-   
-
-    function message($key, $value)
-    {
-        $this->system_message['status'] = $key;
-        $this->system_message['message'] = $value;
+    public function totalBookmark() {
+        $sql = "SELECT * FROM bookmark";
+        try {
+            $stmt = $this->dbHandler->run($sql);
+                return $stmt->rowCount();
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
     }
 
+   
 
 
 

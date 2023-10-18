@@ -70,6 +70,16 @@ class LikeManager
         }
     }
 
+    public function totalLikes() {
+        $sql = "SELECT * FROM likes";
+        try {
+            $stmt = $this->dbHandler->run($sql);
+                return $stmt->rowCount();
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
+    }
+
    
 
     function message($key, $value)
