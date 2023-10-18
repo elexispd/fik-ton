@@ -27,7 +27,7 @@ class Auth
 
     }
 
-    public function registerUser($email, $password, $gender, $phone, $username) {
+    public function registerUser($email, $password, $gender, $phone, $username = null) {
         $sql = "INSERT INTO users (email, password, gender, phone, is_admin, status, username, created_at) VALUES (?, ?, ?, ?, ?, ?, ?,?)";       
         try {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -149,8 +149,8 @@ class Auth
 
 /*  unit test  */
 
-$test = new Auth();
+//$test = new Auth();
  //$output = $test->isUserExists("promisedeco2@gmail.com");
 //$output = $test->login("promisedeco2@gmail.com", 12);
 // $output = $test->registerUser("abc@a.com", 12345, "male", 9823767823, '');
-echo $output ? "true" : "false";
+//echo $output ? "true" : "false";

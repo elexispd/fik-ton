@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(isset($_POST["post_id"]) && isset($_POST["user_id"]) ) {
         $post_id = $_POST["post_id"];
         $user_id = $_POST["user_id"];
-        if(empty($post_id) || empty($post_id)) {
+        if(empty($post_id) || empty($user_id)) {
             $response = ["status" => 101, "message" => "All fields are required"];
         } else {
             $post_obj = new BookmarkManager;
