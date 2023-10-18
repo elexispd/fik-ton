@@ -23,7 +23,7 @@ if (file_exists($endpointPath)) {
 } else {
     // Handle the case where the requested endpoint doesn't exist
     header('HTTP/1.1 404 Not Found');
-    echo json_encode(["status" => 400, "message"=> "Page Not Found"]);
+    echo json_encode(["status" => 400, "message"=> $uriSegments]);
 }
 
 

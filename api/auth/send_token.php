@@ -1,6 +1,6 @@
 <?php 
 require_once(__DIR__ . "/../../models/MailManager.php");
-
+require_once(__DIR__ . "/../../models/Auth.php");
 
 $response = [];
 
@@ -14,7 +14,7 @@ if(isset($_POST["email"]) ) {
     $message = "<h5>Hi, You are almost there. </h5> Your Verification code is <h4> <strong> $token </strong> </h4>";
 
 
-    $msg = $mail_obj->sendMail("promisedeci24@gmail.com", $email, $subject, $message);
+    $msg = $mail_obj->sendMail("promisedeco24@gmail.com", $email, $subject, $message);
     if($msg == 1) {
         $auth = new Auth();
         if($auth->createToken($email, $token)) {

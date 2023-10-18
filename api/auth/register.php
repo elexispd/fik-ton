@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 require_once(__DIR__ . "/../../models/Auth.php");
-
+require_once(__DIR__ . "/../../models/MailManager.php");
 
 $response = [];
 
@@ -31,8 +31,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
 
                     if($auth_obj->registerUser($email, $password, $gender, $phone) ) {
-                        $response = ["status" => 201,
+                        $mailResponse = sendMail_createToken($email, $auth_obj);
+                        if($mailResponse) {
+                            $response = ["status" => 201,
                             "message" => "registration successful. A verification code was sent to your email"];
+                        } else {
+                            $response = ["status" => 102, "message" => $mailResponse];
+                        }
+                        
                     } else {
                         $response = ["status" => 100, "message" => "Registration failed. Something with wrong"];
                     }
@@ -75,6 +81,26 @@ function validatePhone($phone) {
       return true; // Valid phone number
     } else {
       return false; // Invalid phone number
+    }
+  }
+
+  function sendMail_createToken($email, $auth_obj) {
+    $mail_obj = new MailManager();
+
+    $token = rand(1111, 9999);
+
+    $email = $_POST["email"];
+    $subject = "Confirm Your Registration: Unlock the Full Experience!";
+    $message = "<h5>Hi, You are almost there. </h5> Your Verification code is <h4> <strong> $token </strong> </h4> <p style='color:lightgrey; font-size:14px;'> please note that this code will expire after 5 Minutes";
+
+
+    $msg = $mail_obj->sendMail("promisedeco24@gmail.com", $email, $subject, $message);
+    if($msg == 1) {
+        if($auth_obj->createToken($email, $token)) {
+            return true;
+        }
+    } else {
+        return $msg;
     }
   }
   

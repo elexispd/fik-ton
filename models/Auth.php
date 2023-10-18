@@ -94,28 +94,28 @@ class Auth
     }
 
     public function verifyToken($email, $token) {
-        $sql = "SELECT * token_verify WHERE email = ? && token = ?";
+        $sql = "SELECT * FROM token_verify WHERE email = ? AND token = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$email, $token]);
             $verify = $stmt->fetch();
 
-            if($verify) {
+            if($stmt->rowCount() > 0) {
 
-                $createdAt = strtotime($verify['created_at']);
+                $createdAt = (int)$verify['created_at'];
                 $currentTime = time();
                 $expirationTime = $createdAt + 300; // 5 minutes in seconds
 
                 if ($currentTime > $expirationTime) {
-                    // Token has expired, delete it
                     $this->deleteToken($email);
-                    return 0;
+                    return 2;
                 } else {
                     $this->deleteToken($email);
-                    return true;
+                    $this->updateStatus($email);
+                    return 1;
                 }
 
             } else {
-                return false;
+                return 0;
             }
         } catch (\Throwable $th) {
             // Return the database error message
@@ -123,7 +123,7 @@ class Auth
         }
     }
 
-    public function deleteToken($email) {
+    private function deleteToken($email) {
         $sql = "DELETE FROM token_verify WHERE email = ?";
         $stmt = $this->dbHandler->run($sql, [$email]);
         if($stmt->rowCount()) {
@@ -135,10 +135,20 @@ class Auth
 
 
 
-    function message($key, $value)
+    private function updateStatus($email)
     {
-        $this->system_message['status'] = $key;
-        $this->system_message['message'] = $value;
+        $sql = "UPDATE users SET status = ? WHERE email = ?";
+        try {
+            $stmt = $this->dbHandler->run($sql, [$email, 1]);
+            if($stmt) {
+               return true;
+            } else {
+                return false;
+            }
+        } catch (\Throwable $e) {
+            // Return the database error message
+            return "Database Error: " . $e->getMessage();
+        }     
     }
 
     

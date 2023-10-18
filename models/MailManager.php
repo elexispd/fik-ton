@@ -44,7 +44,7 @@ class MailManager{
             //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             $mail->send();
-            return "email sent";
+            return 1;
         } catch (Exception $e) {
             return "email failed to send ". $e->getMessage();
         }
