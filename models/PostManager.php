@@ -25,11 +25,11 @@ class PostManager
         $this->dbHandler = new InitDB();
     }
 
-    public function createPost($title, $content, $thumbnail, $videoLink, $author, $genre, $trending) {
+    public function createPost($title, $content, $thumbnail, $videoLink, $author, $genre, $trending, $status) {
         $sql = "INSERT INTO posts (title, content, thumbnail, video_link, author, genre, is_trending, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";       
         try {
             $date = time();
-            $stmt = $this->dbHandler->run($sql, [$title, $content, $thumbnail, $videoLink, $author,  $genre, $trending, 1, $date]);         
+            $stmt = $this->dbHandler->run($sql, [$title, $content, $thumbnail, $videoLink, $author,  $genre, $trending, $status, $date]);         
             if($stmt->rowCount() > 0) {
                 return true; // Registration successful
             } else {
@@ -42,9 +42,9 @@ class PostManager
     }
 
     public function getPosts() {
-        $sql = "SELECT * FROM posts";
+        $sql = "SELECT * FROM posts WHERE status = ?";
         try {
-            $stmt = $this->dbHandler->run($sql);
+            $stmt = $this->dbHandler->run($sql, [1]);
             if($stmt->rowCount() > 0 ) {
                 return $stmt->fetchAll();
             } else {
@@ -54,6 +54,23 @@ class PostManager
             return "Database Error: ". $e->getMessage();
         }
     }
+
+    public function getDrafts() {
+            $sql = "SELECT * FROM posts WHERE status = ?";
+            try {
+                $stmt = $this->dbHandler->run($sql, [0]);
+                if($stmt->rowCount() > 0 ) {
+                    return $stmt->fetchAll();
+                } else {
+                    return false;
+                }
+            } catch (\Throwable $e) {
+                return "Database Error: ". $e->getMessage();
+            }
+        }
+
+
+
 
     public function getPost($id) {
         $sql = "SELECT * FROM posts WHERE id = ?";

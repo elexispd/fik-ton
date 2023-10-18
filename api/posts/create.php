@@ -8,29 +8,42 @@ $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_POST["title"]) && isset($_POST["content"]) && isset($_FILES["thumbnail"]) && isset($_POST["video_link"]) && isset($_POST["genre"]) && isset($_POST["author"])) {
+    if(isset($_POST["title"]) && isset($_POST["content"]) && isset($_FILES["thumbnail"]) && isset($_POST["video_link"]) && isset($_POST["genre"]) && isset($_POST["author"]) && isset($_POST["status"])) {
         $title = htmlspecialchars($_POST["title"]);
         $content = htmlspecialchars($_POST["content"]);
         $thumbnail = ($_FILES["thumbnail"]);
         $videoLink = htmlspecialchars($_POST["video_link"]);
         $author = htmlspecialchars($_POST["author"]);
         $genre = htmlspecialchars($_POST["genre"]);
+        $status = htmlspecialchars($_POST["status"]);
 
 
         $trending = isset($_POST["trending"]) ? $_POST["trending"] : 0;
         
         $thumb = uploadThumbnail();   
 
-        if(empty($title) && empty($content) && empty($thumb) && empty($video_link) && empty($genre)) {
+        if(empty($title) && empty($content) && empty($thumb) && empty($video_link) && empty($genre) && empty($status)) {
             $response = ["status" => 101, "message" => "Compulsory fields can not be empty"];
         } else {
             $post_obj = new PostManager;
-            if($post_obj->createPost($title, $content, $thumb, $videoLink, $author, $genre, $trending) ) {
-                $response = ["status" => 201,
-                     "message" => "post created successfully"];
+
+            if($status != 1 || $status != 0) {
+                $response = ["status" => 102, "message" => "Status can either be 1 0r 0"];
             } else {
-                $response = ["status" => 100, "message" => "Post could not be created"];
+                if($post_obj->createPost($title, $content, $thumb, $videoLink, $author, $genre, $trending, $status) ) {
+                    if($status == 1) {
+                        $response = ["status" => 201,
+                        "message" => "Post created successfully"];
+                    } else {
+                        $response = ["status" => 201,
+                        "message" => "Draft saved"];
+                    }
+                   
+                } else {
+                    $response = ["status" => 100, "message" => "Post could not be created"];
+                }
             }
+ 
         }
     } else {
         $response = ["status" => 102, "message" => "Invalid Parameters"];
