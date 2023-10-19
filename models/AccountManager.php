@@ -81,11 +81,11 @@ class AccountManager
     }
 
     public function getUserByID($id) {   
-        $sql = "SELECT id, email gender, phone, username, created_at  FROM users WHERE id = ?";  
+        $sql = "SELECT id, email gender, phone, username, is_admin, created_at  FROM users WHERE id = ?";  
         try {  
             $stmt = $this->dbHandler->run($sql, [$id]);
             if($stmt->rowCount() > 0) {
-                return $stmt->fetchAll();
+                return $stmt->fetch();
             } else  {
                 return false;
             }
@@ -111,7 +111,7 @@ class AccountManager
     }
 
     public function totalUsers() {
-        $sql = "SELECT COUNT(*) FROM users WHERE is_admin <> 1";
+        $sql = "SELECT COUNT(*) AS total FROM users WHERE is_admin <> 1";
         try {
             $stmt = $this->dbHandler->run($sql);
             $result = $stmt->fetch();
@@ -120,6 +120,24 @@ class AccountManager
             return "Database Error: ". $e->getMessage();
         }
     }
+
+    public function deleteUser($id) {
+        $sql = "DELETE FROM users WHERE id = ?";
+        try {
+            $stmt = $this->dbHandler->run($sql, [$id]);
+            if($stmt->rowCount() > 0 ) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
+    }
+
+
+
+   
     
 
 

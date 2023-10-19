@@ -146,7 +146,7 @@ class PostManager
     }
 
     public function totalPosts() {
-        $sql = "SELECT COUNT(*) FROM posts";
+        $sql = "SELECT COUNT(*) AS total FROM posts";
         try {
             $stmt = $this->dbHandler->run($sql);
             $result = $stmt->fetch();
