@@ -66,10 +66,11 @@ class NotifyManager
     }
 
     public function totalNotications() {
-        $sql = "SELECT * FROM notifications";
+        $sql = "SELECT COUNT(*) as total FROM notifications";
         try {
             $stmt = $this->dbHandler->run($sql);
-                return $stmt->rowCount();
+            $result = $stmt->fetch();
+            return ($result) ? $result['total'] : 0;
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
         }
@@ -95,7 +96,7 @@ class NotifyManager
 
 /*  unit test  */
 
-$test = new NotifyManager();
+// $test = new NotifyManager();
 //  $output = $test->createNotification("New Show", "testing notify", 1);
 
 

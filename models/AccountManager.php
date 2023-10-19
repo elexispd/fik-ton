@@ -66,10 +66,24 @@ class AccountManager
         }
     }
 
-    public function getUser($email) {   
-        $sql = "SELECT id, email gender, phone, username, created_at  FROM users WHERE email = ? || username = ?";  
+    public function getUser($email, $user_id) {   
+        $sql = "SELECT id, email gender, phone, username, created_at  FROM users WHERE email = ? || id = ?";  
         try {  
-            $stmt = $this->dbHandler->run($sql, [$email, $email]);
+            $stmt = $this->dbHandler->run($sql, [$email, $user_id]);
+            if($stmt->rowCount() > 0) {
+                return $stmt->fetchAll();
+            } else  {
+                return false;
+            }
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
+    }
+
+    public function getUserByID($id) {   
+        $sql = "SELECT id, email gender, phone, username, created_at  FROM users WHERE id = ?";  
+        try {  
+            $stmt = $this->dbHandler->run($sql, [$id]);
             if($stmt->rowCount() > 0) {
                 return $stmt->fetchAll();
             } else  {
@@ -97,10 +111,11 @@ class AccountManager
     }
 
     public function totalUsers() {
-        $sql = "SELECT id, email gender, phone, username, created_at FROM users WHERE is_admin <> 1";
+        $sql = "SELECT COUNT(*) FROM users WHERE is_admin <> 1";
         try {
             $stmt = $this->dbHandler->run($sql);
-            return $stmt->rowCount();
+            $result = $stmt->fetch();
+            return ($result) ? $result['total'] : 0;
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
         }

@@ -146,10 +146,11 @@ class PostManager
     }
 
     public function totalPosts() {
-        $sql = "SELECT * FROM posts";
+        $sql = "SELECT COUNT(*) FROM posts";
         try {
             $stmt = $this->dbHandler->run($sql);
-            return $stmt->rowCount();
+            $result = $stmt->fetch();
+            return ($result) ? $result['total'] : 0;
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
         }

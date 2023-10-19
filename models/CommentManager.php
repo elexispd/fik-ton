@@ -13,7 +13,7 @@ require_once(__DIR__ . "/InitDB.php");
 
 
 
-class BookmarkManager
+class CommentManager
 {
 
     private $dbHandler;
@@ -25,8 +25,8 @@ class BookmarkManager
         $this->dbHandler = new InitDB();
     }
 
-    public function createBookmark($user_id, $post_id) {
-        $sql = "INSERT INTO bookmark (user_id, post_id, created_at) VALUES (?, ?, ?)";       
+    public function createComment($user_id, $post_id) {
+        $sql = "INSERT INTO comments (user_id, post_id, created_at) VALUES (?, ?, ?)";       
         try {
             $date = time();
             $stmt = $this->dbHandler->run($sql, [$user_id, $post_id, $date]);         
@@ -42,10 +42,10 @@ class BookmarkManager
     }
 
     
-    public function deleteBookmark($user_id, $post_id) {
-        $sql = "DELETE FROM bookmark WHERE user_id = ? AND post_id = ?";
+    public function deleteComment($user_id, $post_id) {
+        $sql = "DELETE FROM comments WHERE (user_id = ? || is_admin = ? || is_admin = ?) AND post_id = ?";
         try {
-            $stmt = $this->dbHandler->run($sql, [$user_id, $post_id]);
+            $stmt = $this->dbHandler->run($sql, [$user_id, $user_id, $user_id, $post_id]);
             if($stmt->rowCount() > 0 ) {
                 return true;
             } else {
@@ -56,24 +56,10 @@ class BookmarkManager
         }
     }
 
-    public function isBookmarked($user_id, $post_id) {
-        $sql = "SELECT * FROM bookmark WHERE user_id = ? AND post_id = ?";
+    public function showComments($post_id) {
+        $sql = "SELECT * FROM comments WHERE post_id = ?";
         try {
-            $stmt = $this->dbHandler->run($sql, [$user_id, $post_id]);
-            if($stmt->rowCount() > 0 ) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (\Throwable $e) {
-            return "Database Error: ". $e->getMessage();
-        }
-    }
-
-    public function Bookmarked($user_id) {
-        $sql = "SELECT * FROM bookmark WHERE user_id = ?";
-        try {
-            $stmt = $this->dbHandler->run($sql, [$user_id]);
+            $stmt = $this->dbHandler->run($sql, [$post_id]);
             if($stmt->rowCount() > 0 ) {
                 return $stmt->fetchAll();
             } else {
@@ -84,16 +70,19 @@ class BookmarkManager
         }
     }
 
-    public function totalBookmark() {
-        $sql = "SELECT  COUNT(*) as total FROM bookmark";
+    public function totalComments($post_id) {
+        $sql = "SELECT COUNT(*) as total FROM comments WHERE post_id = ?";
         try {
-            $stmt = $this->dbHandler->run($sql);
+            $stmt = $this->dbHandler->run($sql, [$post_id]);
             $result = $stmt->fetch();
             return ($result) ? $result['total'] : 0;
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
         }
     }
+    
+
+   
 
    
 
@@ -103,7 +92,7 @@ class BookmarkManager
 
 /*  unit test  */
 
-$test = new BookmarkManager();
+// $test = new BookmarkManager();
 //$output = $test->createBookmark(1,2);
 // $output = $test->deleteBookmark(1, 2);
 // $output = $test->isBookmarked(1, 2);

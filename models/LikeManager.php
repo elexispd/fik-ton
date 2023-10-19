@@ -71,10 +71,11 @@ class LikeManager
     }
 
     public function totalLikes() {
-        $sql = "SELECT * FROM likes";
+        $sql = "SELECT COUNT(*) as total FROM likes";
         try {
             $stmt = $this->dbHandler->run($sql);
-                return $stmt->rowCount();
+            $result = $stmt->fetch();
+            return ($result) ? $result['total'] : 0;
         } catch (\Throwable $e) {
             return "Database Error: ". $e->getMessage();
         }

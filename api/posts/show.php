@@ -7,9 +7,9 @@ require_once(__DIR__ . "/../../models/PostManager.php");
 $response = [];
 
 
-if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_POST["id"])) {
-        $id = htmlspecialchars($_POST["id"]);
+if($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if(isset($_GET["id"])) {
+        $id = htmlspecialchars($_GET["id"]);
         if(empty($id)) {
             $response = ["status" => 101, "message" => "ID must not be empty"];
         } else {

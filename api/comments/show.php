@@ -1,23 +1,23 @@
 <?php 
 header('Content-Type: application/json');
 
-require_once(__DIR__ . "/../../models/NotifyManager.php");
+require_once(__DIR__ . "/../../models/CommentManager.php");
 
 
 $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $notify_obj = new NotifyManager;
-    if(isset($_GET["id"])) {
-        $id = htmlspecialchars($_GET["id"]);
+    $comment_obj = new CommentManager;
+    if(isset($_POST["post_id"])) {
+        $id = htmlspecialchars($_GET["post_id"]);
         if(empty($id)) {
-            $response = ["status" => 101, "message" => "ID must not be empty"];
+            $response = ["status" => 101, "message" => "Post ID must not be empty"];
         } else {
-            if($notify_obj->getNotication($id) != false) {
+            if($notify_obj->showComments($id) != false) {
                 $response = ["status" => 201,
                             "message" => "successful", 
-                            "data" => $notify_obj->getNotication($id)];
+                            "data" => $comment_obj->showComments($id)];
             } else {
                 $response = ["status" => 100, "message" => "No data to return"];
             }
