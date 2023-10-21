@@ -256,6 +256,7 @@ class MailManager{
 }
 
 
+
 // $output = new MailManager();
 
 // $a = "<h5 style='font-size: 200%;' >Hello, </h5> <p style='font-size: 150%;'>Your Verification token is </p> <h4 style='font-size: 250%;'>123456</h4>";

@@ -56,14 +56,14 @@ class Auth
     }
 
     public function login($email, $password) {
-        $sql = "SELECT email, password FROM users WHERE email = ?";
+        $sql = "SELECT id, email, password FROM users WHERE email = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$email]);
             $user = $stmt->fetch();
             if($user) {
                 if (password_verify($password, $user['password'])) {
                     // Passwords match, login successful
-                    return true;
+                    return $user;
                 } else {
                     return false;
                 }
@@ -151,6 +151,58 @@ class Auth
         }     
     }
 
+    public function auth($id, $password) {
+        $sql = "SELECT id, password FROM users WHERE id = ? AND password = ?";
+        try {
+            $stmt = $this->dbHandler->run($sql, [$id, $password]);
+            if($stmt->rowCount() > 0) {
+                return true; // Returns true if the user exists, false otherwise
+            } else  {
+                return false; // Return false in case of an error
+            }
+        } catch (\Throwable $e) {
+            // Return the database error message
+            return "Database Error: " . $e->getMessage();
+        }
+        
+    }
+
+    public function encrypt($data) {
+        $key = md5('fik');
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+        return base64_encode($encrypted . ',' . $iv);
+    }
+
+    public function decrypt($encryptedData) {
+        $key = md5('fik');
+        // Use a comma as the separator, consistent with the encryption part
+        $explodedData = explode(',', base64_decode($encryptedData), 2);
+        // Check if the explode was successful
+        if (count($explodedData) === 2) {
+            list($data, $iv) = $explodedData;
+            return openssl_decrypt($data, 'aes-256-cbc', $key, 0, $iv);
+        } else {
+            // Handle the case where the explode was not successful
+            return false; // Or any other appropriate error handling
+        }
+    }
+    
+
+
+    public function authorize($token) {
+        $token = $this->decrypt($token);
+        $data = explode(",", $token);
+
+        $userId = isset($data[0]) ? $data[0] : null;
+        $password = isset($data[1]) ? $data[1] : null;
+               
+        if($this->auth($userId, $password)) {
+            return $data;
+        } else {
+            return false;
+        }
+    }
     
 
 

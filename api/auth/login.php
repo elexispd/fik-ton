@@ -11,13 +11,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(isset($_POST["email"]) && isset($_POST["password"]) ) {
         $email = $_POST["email"];
         $password = $_POST["password"];
+        
         if(empty($email) || empty($password)) {
             $response = ["status" => 101, "message" => "All fields are required"];
         } else {
             $auth_obj = new Auth;
-            if($auth_obj->login($email, $password) ) {
+            $user  = $auth_obj->login($email, $password);
+            if($user != false) {
+
+                $data = $user["id"].','.$user["password"].','.$user["email"];
+                $token = $auth_obj->encrypt($data);
                 $response = ["status" => 201,
-                     "message" => "Login successful"];
+                     "message" => "Login successful", "token" => $token];
             } else {
                 $response = ["status" => 100, "message" => "Incorrect login details"];
             }
