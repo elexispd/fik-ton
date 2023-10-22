@@ -8,7 +8,7 @@ $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if(isset($_POST["token"])) {
+    if(isset($_GET["token"])) {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_GET["token"]);
         if($user != false) {

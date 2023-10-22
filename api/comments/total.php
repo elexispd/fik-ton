@@ -8,7 +8,7 @@ require_once(__DIR__ . "/../../models/Auth.php");
 $response = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if(isset($_GET["post_id"])  && isset($_POST["token"])) {
+    if(isset($_GET["post_id"])  && isset($_GET["token"])) {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_GET["token"]);
         if($user != false) {

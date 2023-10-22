@@ -9,11 +9,11 @@ $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_POST["id"]) && isset($_POST["token"]) ) {
+    if(isset($_POST["post_id"]) && isset($_POST["token"]) ) {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_POST["token"]);
         if($user != false) {
-            $id = $_POST["id"];
+            $id = $_POST["post_id"];
             if(empty($id)) {
                 $response = ["status" => 101, "message" => "ID field is required"];
             } else {

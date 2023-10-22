@@ -13,7 +13,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_GET["token"]);        
         
-        if($user[0] != false) {
+        if($user != false) {
             $account_obj = new AccountManager;
             if($account_obj->getAllUsers() != false) {
                 $response = ["status" => 201,

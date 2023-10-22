@@ -10,11 +10,11 @@ $response = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
     $notify_obj = new NotifyManager;
-    if(isset($_GET["id"]) && isset($_GET["token"])) {
+    if(isset($_GET["notify_id"]) && isset($_GET["token"])) {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_GET["token"]);
         if($user != false) {
-            $id = htmlspecialchars($_GET["id"]);
+            $id = htmlspecialchars($_GET["notify_id"]);
             if(empty($id)) {
                 $response = ["status" => 101, "message" => "ID must not be empty"];
             } else {

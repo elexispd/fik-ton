@@ -33,8 +33,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if($auth_obj->registerUser($email, $password, $gender, $phone) ) {
                         $mailResponse = sendMail_createToken($email, $auth_obj);
                         if($mailResponse) {
+                            $data = $email.","."1";
+                            $token = $auth_obj->encrypt($data);
                             $response = ["status" => 201,
-                            "message" => "registration successful. A verification code was sent to your email"];
+                            "message" => "registration successful. A verification code was sent to your email", "token" => $token];
                         } else {
                             $response = ["status" => 102, "message" => $mailResponse];
                         }

@@ -9,26 +9,26 @@ $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if(isset($_GET["email"]) && isset($_GET["token"])  ) {
+    if(isset($_GET["user_id"]) && isset($_GET["token"])  ) {
         
-        $email = isset($_GET["email"]) ? htmlspecialchars($_GET["email"]) : null;
+        $id = isset($_GET["user_id"]) ? htmlspecialchars($_GET["user_id"]) : null;
 
             $auth_obj = new Auth;
             $user = $auth_obj->authorize($_GET["token"]);        
             
-            if($user[0] != false) {
-                if(empty($email) ) {
-                    $response = ["status" => 101, "message" => "Email/UserID must not be empty"];
+            if($user != false) {
+                if(empty($id) ) {
+                    $response = ["status" => 101, "message" => "UserID must not be empty"];
                 } else {
                     $account_obj = new AccountManager;
-                    if($account_obj->getUser($email, $user_id) != false) {
+                    if($account_obj->getUser($id, $id) != false) {
                         $response = ["status" => 201,
                             "message" => "successful", 
-                            "data" => $account_obj->getUser($email, $user_id)];
+                            "data" => $account_obj->getUser($id, $id)];
                             http_response_code(201);
                     } else {
                         $response = ["status" => 100, "message" => "User does not exist"];
-                        http_response_code(204);
+                        http_response_code(200);
                     }
                 }
             } else {

@@ -21,10 +21,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $post_obj = new BookmarkManager;
                 if($post_obj->createBookmark($user[0], $post_id) ) {
                     $response = ["status" => 201,
-                        "message" => "Bookmark removed successfully"];
+                        "message" => "Post bookmarked successfully"];
                 } else {
                     http_response_code(500);
-                    $response = ["status" => 100, "message" => "Bookmark could not be removed"];
+                    $response = ["status" => 100, "message" => "Post removed from bookmark"];
                 }
             }
         } else {

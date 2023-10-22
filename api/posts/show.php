@@ -9,8 +9,8 @@ $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if(isset($_GET["id"]) && isset($_GET["token"])) {
-        $id = htmlspecialchars($_GET["id"]);
+    if(isset($_GET["post_id"]) && isset($_GET["token"])) {
+        $id = htmlspecialchars($_GET["post_id"]);
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_GET["token"]);
         if($user != false) {
@@ -18,13 +18,13 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $response = ["status" => 101, "message" => "ID must not be empty"];
             } else {
                 $post_obj = new PostManager;
-                if($account_obj->getPost($id) != false) {
+                if($post_obj->getPost($id) != false) {
                     $response = ["status" => 201,
                         "message" => "successful", 
                         "data" => $post_obj->getPost($id)];
                         http_response_code(201);
                 } else {
-                    http_response_code(204);
+                    http_response_code(404);
                     $response = ["status" => 100, "message" => "Post does not exist"];
                 }
             }

@@ -13,7 +13,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_GET["token"]);        
         
-        if($user[0] != false) {
+        if($user != false) {
             $account_obj = new AccountManager;
             if($account_obj->getAllSubAdmins() != false) {
                 $response = ["status" => 201,
@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
                             "data" => $account_obj->getAllUsers()];
                             http_response_code(202);
             } else {
-                http_response_code(204);
+                http_response_code(200);
                 $response = ["status" => 100, "message" => "No data to return"];
             }
         } else {

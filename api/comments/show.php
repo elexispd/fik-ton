@@ -18,7 +18,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
             if(empty($id)) {
                 $response = ["status" => 101, "message" => "Post ID must not be empty"];
             } else {
-                if($notify_obj->showComments($id) != false) {
+                if($comment_obj->showComments($id) != false) {
                     $response = ["status" => 201,
                                 "message" => "successful", 
                                 "data" => $comment_obj->showComments($id)];

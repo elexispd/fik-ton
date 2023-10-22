@@ -17,21 +17,26 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $auth_obj = new Auth;
             $user  = $auth_obj->login($email, $password);
-            if($user != false) {
-
-                $data = $user["id"].','.$user["password"].','.$user["email"];
+            
+            if($user == -1 ) {
+                $response = ["status" => 100, "message" => "Incorrect login details"];             
+            } elseif($user == 0) {
+                $response = ["status" => 100, "message" => "Account is inactive"]; 
+            }
+             else {
+                $data = $user["id"].','.$password.','.$user["email"];
                 $token = $auth_obj->encrypt($data);
                 $response = ["status" => 201,
                      "message" => "Login successful", "token" => $token];
-            } else {
-                $response = ["status" => 100, "message" => "Incorrect login details"];
             }
         }
     } else {
+        http_response_code(403);
         $response = ["status" => 102, "message" => "Invalid Parameter"];
     }
       
 } else {
+    http_response_code(405);
     $response = ["status" => 105, "message" => "Invalid Request Method"];
 }
 

@@ -1,7 +1,7 @@
 <?php 
 header('Content-Type: application/json');
 
-require_once(__DIR__ . "/../../models/NotifyManager.php");
+require_once(__DIR__ . "/../../models/LikeManager.php");
 require_once(__DIR__ . "/../../models/Auth.php");
 
 
@@ -22,6 +22,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if($like_obj->createLike($user[0], $post_id) ) {
                     $response = ["status" => 201,
                         "message" => "success"];
+                        http_response_code(201);
                 } else {
                     http_response_code(500);
                     $response = ["status" => 100, "message" => "could not like"];

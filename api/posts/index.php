@@ -22,6 +22,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
                             "data" => $post_obj->getPosts()];
             } else {
                 $response = ["status" => 100, "message" => "No data to return"];
+                http_response_code(200);
             }
         } else {
             http_response_code(401);

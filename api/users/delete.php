@@ -10,21 +10,21 @@ $response = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(isset($_POST["user_id"]) && isset($_POST["token"])) {
-        $admin_id = $_POST["admin_id"];
         
         $auth_obj = new Auth;
-        $user = $auth_obj->authorize($_POST["token"]);        
+        $user = $auth_obj->authorize($_POST["token"]);  
+        $user_id= $_POST["user_id"];      
         
-        if($user[0] != false) {
-            if(empty($is_admin) || empty($user_id)) {
-                $response = ["status" => 101, "message" => "Fields are required"];
+        if($user != false) {
+            if(empty($user_id)) {
+                $response = ["status" => 101, "message" => "User ID field is required"];
             } else {
                 $account_obj = new AccountManager;
 
-                $admin = $account_obj->getUserByID($admin_id);
+                $admin = $account_obj->getUserByID($user[0]);
                 $user = $account_obj->getUserByID($user_id);
                 if($admin != false && $user != false) {
-                    if($admin["is_admin"] == 2 ) {
+                    if($admin["is_admin"] == 1 ) {
                         if($account_obj->deleteUser($user_id) ) {
                             $response = ["status" => 201,
                                 "message" => "User deleted successfully"];
@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 } else {
                     http_response_code(401);
-                    $response = ["status" => 401, "message" => "Unauthorized access"];
+                    $response = ["status" => 401, "message" => "User dos not exist"];
                 }
                 
             }

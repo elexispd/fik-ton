@@ -1,7 +1,7 @@
 <?php 
 header('Content-Type: application/json');
 
-require_once(__DIR__ . "/../../models/BookManager.php");
+require_once(__DIR__ . "/../../models/BookmarkManager.php");
 require_once(__DIR__ . "/../../models/Auth.php");
 
 

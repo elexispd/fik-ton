@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(isset($_POST["post_id"]) && isset($_POST["token"]) ) {
         $post_id = $_POST["post_id"];
         $auth_obj = new Auth;
-        $user = $auth_obj->authorize($_GET["token"]);
+        $user = $auth_obj->authorize($_POST["token"]);
         if($user != false) {
             if(empty($post_id)) {
                 $response = ["status" => 101, "message" => "PostID field is required"];

@@ -18,7 +18,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = ["status" => 101, "message" => "All fields are required"];
             } else {
                 $post_obj = new BookmarkManager;
-                if($post_obj->deleteBookmark($user_id, $post_id) ) {
+                if($post_obj->deleteBookmark($user[0], $post_id) ) {
                     $response = ["status" => 201,
                         "message" => "Bookmark removed successfully"];
                 } else {

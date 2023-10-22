@@ -98,7 +98,7 @@ class AccountManager
         $sql = "UPDATE users SET password = ? WHERE email = ?";
         try {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $this->dbHandler->run($sql, [$email, $hashedPassword]);
+            $stmt = $this->dbHandler->run($sql, [$hashedPassword, $email]);
             if($stmt) {
                return true;
             } else {

@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 //Confirm if file is local or Public and add the right path
 
 require_once(__DIR__ . "/../vendor/autoload.php");
@@ -56,16 +56,21 @@ class Auth
     }
 
     public function login($email, $password) {
-        $sql = "SELECT id, email, password FROM users WHERE email = ?";
+        $sql = "SELECT id, email, status, password FROM users WHERE email = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$email]);
             $user = $stmt->fetch();
             if($user) {
                 if (password_verify($password, $user['password'])) {
                     // Passwords match, login successful
-                    return $user;
+                    if($user["status"] == 1) {
+                        return $user;
+                    } else {
+                        return 0;
+                    }
+                    
                 } else {
-                    return false;
+                    return -1;
                 }
             } else {
                 return false;
@@ -139,7 +144,7 @@ class Auth
     {
         $sql = "UPDATE users SET status = ? WHERE email = ?";
         try {
-            $stmt = $this->dbHandler->run($sql, [$email, 1]);
+            $stmt = $this->dbHandler->run($sql, [1, $email]);
             if($stmt) {
                return true;
             } else {
@@ -152,13 +157,20 @@ class Auth
     }
 
     public function auth($id, $password) {
-        $sql = "SELECT id, password FROM users WHERE id = ? AND password = ?";
+        
+        $sql = "SELECT id, password FROM users WHERE id = ?";
         try {
-            $stmt = $this->dbHandler->run($sql, [$id, $password]);
-            if($stmt->rowCount() > 0) {
-                return true; // Returns true if the user exists, false otherwise
-            } else  {
-                return false; // Return false in case of an error
+            $stmt = $this->dbHandler->run($sql, [$id]);
+            $user = $stmt->fetch();
+            if($user) {
+                if (password_verify($password, $user['password'])) {
+                    // Passwords match, login successfu
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
             }
         } catch (\Throwable $e) {
             // Return the database error message

@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 
 require_once(__DIR__ . "/../../models/AccountManager.php");
+require_once(__DIR__ . "/../../models/Auth.php");
 
 
 $response = [];
@@ -12,7 +13,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET') {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_GET["token"]);        
         
-        if($user[0] != false) {
+        if($user != false) {
             $account_obj = new AccountManager;
             $total = $account_obj->totalUsers();
             $response = ["status" => 201, "message" => "successfull", "data" => $total];

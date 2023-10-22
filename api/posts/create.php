@@ -15,12 +15,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $auth_obj = new Auth;
         $user = $auth_obj->authorize($_POST["token"]);        
         
-        if($user[0] != false) {
+        if($user != false) {
             $title = htmlspecialchars($_POST["title"]);
             $content = htmlspecialchars($_POST["content"]);
             $thumbnail = ($_FILES["thumbnail"]);
             $videoLink = htmlspecialchars($_POST["video_link"]);
-            $author = $data[2];
+            $author = $user[2];
             $genre = htmlspecialchars($_POST["genre"]);
             $status = htmlspecialchars($_POST["status"]);
 
