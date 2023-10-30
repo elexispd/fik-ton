@@ -36,7 +36,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if($mailResponse) {
                             $data = $email.","."1";
                             $token = $auth_obj->encrypt($data);
+<<<<<<< HEAD
                             $response = ["status" => 1,
+=======
+                            $response = ["status" => 201,
+>>>>>>> 64a231d4352d8483abe5d2464200fc161c4b28ed
                             "message" => "registration successful. A verification code was sent to your email", "token" => $token];
                         } else {
                             $response = ["status" => 0, "message" => $mailResponse];

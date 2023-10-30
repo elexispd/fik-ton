@@ -70,7 +70,7 @@ class Auth
                     }
                     
                 } else {
-                    return false;
+                    return -1;
                 }
             } else {
                 return false;

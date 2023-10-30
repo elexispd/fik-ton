@@ -15,9 +15,15 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
         if(!empty($code) ) {
             $auth_obj = new Auth();
             if($auth_obj->verifyToken($user[0], $code) === 1) {
+<<<<<<< HEAD
                 $response = ["status" => 1, "message" => "token verified successfully. Login to continue", "token" => $token];
             } elseif($auth_obj->verifyToken($user[0], $code) === 0 ) {
                 $response = ["status" => 0, "message" => "Incorrect Verification Code"];
+=======
+                $response = ["status" => 201, "message" => "token verified successfully. Login to continue"];
+            } elseif($auth_obj->verifyToken($user[0], $code) === 0 ) {
+                $response = ["status" => 404, "message" => "Incorrect Verification Code"];
+>>>>>>> 64a231d4352d8483abe5d2464200fc161c4b28ed
             } else {
                 $response = ["status" => 0, "message" => "Code has expired"];
             }
