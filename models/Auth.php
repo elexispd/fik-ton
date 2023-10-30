@@ -1,7 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 //Confirm if file is local or Public and add the right path
 
 require_once(__DIR__ . "/../vendor/autoload.php");
@@ -27,12 +27,12 @@ class Auth
 
     }
 
-    public function registerUser($email, $password, $gender, $phone, $username = null) {
-        $sql = "INSERT INTO users (email, password, gender, phone, is_admin, status, username, created_at) VALUES (?, ?, ?, ?, ?, ?, ?,?)";       
+    public function registerUser($email, $password, $gender, $phone, $topic, $username = null) {
+        $sql = "INSERT INTO users (email, password, gender, phone, is_admin, status, username, notify_topic, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";       
         try {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             $date = time();
-            $stmt = $this->dbHandler->run($sql, [$email, $hashedPassword, $gender, $phone, 0, 0, $username, $date]);         
+            $stmt = $this->dbHandler->run($sql, [$email, $hashedPassword, $gender, $phone, 0, 0, $username, $topic, $date]);         
             if($stmt->rowCount() > 0) {
                 return true; // Registration successful
             } else {
@@ -56,14 +56,19 @@ class Auth
     }
 
     public function login($email, $password) {
-        $sql = "SELECT email, password FROM users WHERE email = ?";
+        $sql = "SELECT id, email, status, password, phone, gender, is_admin, status FROM users WHERE email = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$email]);
             $user = $stmt->fetch();
             if($user) {
                 if (password_verify($password, $user['password'])) {
                     // Passwords match, login successful
-                    return true;
+                    if($user["status"] == 1) {
+                        return $user;
+                    } else {
+                        return -1;
+                    }
+                    
                 } else {
                     return false;
                 }
@@ -139,7 +144,7 @@ class Auth
     {
         $sql = "UPDATE users SET status = ? WHERE email = ?";
         try {
-            $stmt = $this->dbHandler->run($sql, [$email, 1]);
+            $stmt = $this->dbHandler->run($sql, [1, $email]);
             if($stmt) {
                return true;
             } else {
@@ -151,6 +156,85 @@ class Auth
         }     
     }
 
+    public function auth($id, $password) {
+        
+        $sql = "SELECT id, password FROM users WHERE id = ?";
+        try {
+            $stmt = $this->dbHandler->run($sql, [$id]);
+            $user = $stmt->fetch();
+            if($user) {
+                if (password_verify($password, $user['password'])) {
+                    // Passwords match, login successfu
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (\Throwable $e) {
+            // Return the database error message
+            return "Database Error: " . $e->getMessage();
+        }
+        
+    }
+
+    // public function encrypt($data) {
+    //     $key = md5('fik');
+    //     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+    //     $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    //     return base64_encode($encrypted . ',' . $iv);
+    // }
+
+    // public function decrypt($encryptedData) {
+    //     $key = md5('fik');
+    //     // Use a comma as the separator, consistent with the encryption part
+    //     $explodedData = explode(',', base64_decode($encryptedData), 2);
+    //     // Check if the explode was successful
+    //     if (count($explodedData) === 2) {
+    //         list($data, $iv) = $explodedData;
+    //         return openssl_decrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    //     } else {
+    //         // Handle the case where the explode was not successful
+    //         return false; // Or any other appropriate error handling
+    //     }
+    // }
+    
+    public function encrypt($data) {
+    $key = md5('fik');
+    $iv = openssl_random_pseudo_bytes(16); // Ensure the IV is 16 bytes
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($encrypted . ',' . $iv);
+    }
+    
+    public function decrypt($encryptedData) {
+        $key = md5('fik');
+        // Use a comma as the separator, consistent with the encryption part
+        $explodedData = explode(',', base64_decode($encryptedData), 2);
+        // Check if the explode was successful
+        if (count($explodedData) === 2) {
+            list($data, $iv) = $explodedData;
+            $iv = str_pad($iv, 16, "\0"); // Pad the IV to 16 bytes if needed
+            return openssl_decrypt($data, 'aes-256-cbc', $key, 0, $iv);
+        } else {
+            // Handle the case where the explode was not successful
+            return false; // Or any other appropriate error handling
+        }
+    }
+
+    public function authorize($token) {
+        $token = $this->decrypt($token);
+        $data = explode(",", $token);
+
+        $userId = isset($data[0]) ? $data[0] : null;
+        $password = isset($data[1]) ? $data[1] : null;
+               
+        if($this->auth($userId, $password)) {
+            return $data;
+        } else {
+            return false;
+        }
+    }
     
 
 

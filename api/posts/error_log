@@ -1,0 +1,11 @@
+[28-Oct-2023 16:45:16 Africa/Lagos] PHP Fatal error:  Uncaught Error: Class 'PinManager' not found in /home/fikktonc/public_html/models/PostManager.php:56
+Stack trace:
+#0 /home/fikktonc/public_html/api/posts/index.php(19): PostManager->getPosts('8')
+#1 {main}
+  thrown in /home/fikktonc/public_html/models/PostManager.php on line 56
+[28-Oct-2023 16:45:58 Africa/Lagos] PHP Warning:  require_once(/home/fikktonc/public_html/models/Pinmanager.php): failed to open stream: No such file or directory in /home/fikktonc/public_html/models/PostManager.php on line 10
+[28-Oct-2023 16:45:58 Africa/Lagos] PHP Fatal error:  require_once(): Failed opening required '/home/fikktonc/public_html/models/Pinmanager.php' (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/fikktonc/public_html/models/PostManager.php on line 10
+[28-Oct-2023 16:55:08 Africa/Lagos] PHP Notice:  Undefined variable: filter in /home/fikktonc/public_html/models/PostManager.php on line 74
+[28-Oct-2023 16:55:08 Africa/Lagos] PHP Notice:  Undefined variable: genre in /home/fikktonc/public_html/models/PostManager.php on line 75
+[28-Oct-2023 16:55:08 Africa/Lagos] PHP Notice:  Undefined variable: filter in /home/fikktonc/public_html/models/PostManager.php on line 74
+[28-Oct-2023 16:55:08 Africa/Lagos] PHP Notice:  Undefined variable: genre in /home/fikktonc/public_html/models/PostManager.php on line 75

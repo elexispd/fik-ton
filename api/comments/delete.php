@@ -2,31 +2,42 @@
 header('Content-Type: application/json');
 
 require_once(__DIR__ . "/../../models/CommentManager.php");
+require_once(__DIR__ . "/../../models/Auth.php");
 
 
 $response = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_POST["user_id"]) && isset($_POST["post_id"]) ) {
-        $user_id = $_POST["user_id"];
+    if(isset($_POST["post_id"]) && isset($_POST["token"])) {
+
         $post_id = $_POST["post_id"];
-        if(empty($user_id) || empty($user_id)) {
-            $response = ["status" => 101, "message" => "ID field is required"];
-        } else {
-            $post_obj = new CommentManager;
-            if($post_obj->deleteComment($user_id, $post_id) ) {
-                $response = ["status" => 201,
-                     "message" => "Notification deleted successfully"];
+
+        $auth_obj = new Auth;
+        $user = $auth_obj->authorize($_POST["token"]);
+        if($user != false) {
+            if(empty($post_id)) {
+                $response = ["status" => 0, "message" => "ID field is required"];
             } else {
-                $response = ["status" => 100, "message" => "Notication could not be deleted"];
+                $comment_obj = new CommentManager;
+                if($comment_obj->deleteComment($user[0], $post_id) ) {
+                    $response = ["status" => 1,
+                        "message" => "Notification deleted successfully"];
+                } else {
+                    http_response_code(500);
+                    $response = ["status" => 0, "message" => "Notication could not be deleted"];
+                }
             }
+        } else {
+            http_response_code(401);
+            $response = ["status" => 0, "message" => "Unauthorized user"];
         }
     } else {
-        $response = ["status" => 102, "message" => "Invalid Parameter"];
+        $response = ["status" => 0, "message" => "Invalid Parameter"];
     }
       
 } else {
-    $response = ["status" => 105, "message" => "Invalid Request Method"];
+    http_response_code(405);
+    $response = ["status" => 0, "message" => "Invalid Request Method"];
 }
 
 

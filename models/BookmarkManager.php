@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 require_once(__DIR__ . "/../vendor/autoload.php");
 
 require_once(__DIR__ . "/InitDB.php");
+require_once(__DIR__ . "/PostManager.php");
 
 
 
@@ -71,7 +72,9 @@ class BookmarkManager
     }
 
     public function Bookmarked($user_id) {
-        $sql = "SELECT * FROM bookmark WHERE user_id = ?";
+        $sql = "SELECT bookmark.*, posts.*  FROM bookmark
+                JOIN posts ON bookmark.post_id = posts.id
+                WHERE user_id = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$user_id]);
             if($stmt->rowCount() > 0 ) {

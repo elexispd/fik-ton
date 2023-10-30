@@ -19,15 +19,15 @@ class MailManager{
             //Server settings
             //$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
             $mail->isSMTP();                                            //Send using SMTP
-            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+            $mail->Host       = '';                     //Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = 'promisedeco24@gmail.com';                     //SMTP username
-            $mail->Password   = 'sekbnjxjssrchgka';                               //SMTP password
+            $mail->Username   = '';                     //SMTP username
+            $mail->Password   = '';                               //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
-            $mail->setFrom($from, "Fikkon");
+            $mail->setFrom($from, "Fikkton");
             $mail->addAddress($to);     //Add a recipient        
             //$mail->addReplyTo($reply_to);
             //$mail->addCC($cc);
@@ -102,8 +102,9 @@ class MailManager{
                                    <td><center data-parsed="">
                                                                            <a href="https://gaijinmall.com" align="center"
                                                                                class="text-center">
-                                                                               <img src="https://gaijinmall.com/views/assets/images/logo-sm.png"
-                                                                                   class="swu-logo" style="margin-bottom: 15px;">
+                                                                               <img src="https://fikkton.com.ng/assets/img/logo-text.png"
+                                                                                   class="swu-logo" style="width: 180px; margin-bottom: 15px;">
+                                                                                   
                                                                            </a>
                                                                        </center></td>
                                    </tr>

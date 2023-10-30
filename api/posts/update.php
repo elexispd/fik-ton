@@ -2,49 +2,61 @@
 header('Content-Type: application/json');
 
 require_once(__DIR__ . "/../../models/PostManager.php");
+require_once(__DIR__ . "/../../models/Auth.php");
 
 
 $response = [];
 
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if(isset($_POST["title"]) && isset($_POST["content"]) && isset($_FILES["thumbnail"]) && isset($_POST["video_link"]) && isset($_POST["genre"]) && isset($_POST["author"]) && isset($_POST["post_id"])) {
-        $title = htmlspecialchars($_POST["title"]);
-        $content = htmlspecialchars($_POST["content"]);
-        $thumbnail = ($_FILES["thumbnail"]);
-        $videoLink = htmlspecialchars($_POST["video_link"]);
-        $author = htmlspecialchars($_POST["author"]);
-        $genre = htmlspecialchars($_POST["genre"]);
-        $post_id = htmlspecialchars($_POST["post_id"]);
+    if(isset($_POST["title"]) && isset($_POST["content"]) && isset($_FILES["thumbnail"]) && isset($_POST["video_link"]) && isset($_POST["genre"]) && isset($_POST["token"]) && isset($_POST["post_id"])) {
+        $auth_obj = new Auth;
+        $user = $auth_obj->authorize($_POST["token"]);
+        if($user != false) {
+            $title = htmlspecialchars($_POST["title"]);
+            $content = htmlspecialchars($_POST["content"]);
+            $thumbnail = ($_FILES["thumbnail"]);
+            $videoLink = htmlspecialchars($_POST["video_link"]);
+            $author = $user[2];
+            $genre = htmlspecialchars($_POST["genre"]);
+            $post_id = htmlspecialchars($_POST["post_id"]);
 
 
-        $trending = isset($_POST["trending"]) ? $_POST["trending"] : 0;
-        
-        $thumb = uploadThumbnail();   
+            $trending = isset($_POST["trending"]) ? $_POST["trending"] : 0;
+            $status = isset($_POST["status"]) ? $_POST["status"] : 1;
+            
+            $thumb = uploadThumbnail();   
 
-        if(empty($title) && empty($content) && empty($thumb) && empty($video_link) && empty($genre) && empty($post_id)) {
-            $response = ["status" => 101, "message" => "Compulsory fields can not be empty"];
-        } else {
-            $post_obj = new PostManager;
-
-            if($status != 1 || $status != 0) {
-                $response = ["status" => 102, "message" => "Status can either be 1 0r 0"];
+            if(empty($title) && empty($content) && empty($thumb) && empty($video_link) && empty($genre) && empty($post_id)) {
+                $response = ["status" => 0, "message" => "Compulsory fields can not be empty"];
             } else {
-                if($post_obj->updatePost($title, $content, $thumb, $videoLink, $author, $genre, $trending, $post_id) ) {
-                    $response = ["status" => 201,
-                        "message" => "Post updated successfully"];
+                $post_obj = new PostManager;
+
+                if($status != 1 && $status != 0) {
+                    $response = ["status" => 0, "message" => "Status can either be 1 0r 0"];
                 } else {
-                    $response = ["status" => 100, "message" => "Post could not be update"];
+                    if($post_obj->updatePost($title, $content, $thumb, $videoLink, $author, $genre, $trending, $post_id) ) {
+                        $response = ["status" => 1,
+                            "message" => "Post updated successfully"];
+                    } else {
+                        http_response_code(500);
+                        $response = ["status" => 0, "message" => "Post could not be update"];
+                    }
                 }
+    
             }
- 
+        } else {
+            http_response_code(401);
+            $response = ["status" => 0, "message" => "Unauthorized user"];
         }
     } else {
-        $response = ["status" => 102, "message" => "Invalid Parameters"];
+        http_response_code(403);
+        $response = ["status" => 0, "message" => "Invalid Parameters"];
     }
       
 } else {
-    $response = ["status" => 105, "message" => "Invalid Request Method"];
+    http_response_code(405);
+    $response = ["status" => 0, "message" => "Invalid Request Method"];
 }
 
 function uploadThumbnail() {

@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 
 require_once(__DIR__ . "/../vendor/autoload.php");
 
+
 require_once(__DIR__ . "/InitDB.php");
 
 
@@ -25,11 +26,11 @@ class CommentManager
         $this->dbHandler = new InitDB();
     }
 
-    public function createComment($user_id, $post_id) {
-        $sql = "INSERT INTO comments (user_id, post_id, created_at) VALUES (?, ?, ?)";       
+    public function createComment($user_id, $comment, $post_id) {
+        $sql = "INSERT INTO comments (user_id, comment, post_id, created_at) VALUES (?, ?, ?,?)";       
         try {
             $date = time();
-            $stmt = $this->dbHandler->run($sql, [$user_id, $post_id, $date]);         
+            $stmt = $this->dbHandler->run($sql, [$user_id, $comment, $post_id, $date]);         
             if($stmt->rowCount() > 0) {
                 return true; // Registration successful
             } else {
@@ -57,23 +58,39 @@ class CommentManager
     }
 
     public function showComments($post_id) {
-        $sql = "SELECT * FROM comments WHERE post_id = ?";
+        $sql = "SELECT comments.*, users.email 
+                FROM comments
+                JOIN users ON comments.user_id = users.id
+                WHERE comments.post_id = ?";
+        
         try {
             $stmt = $this->dbHandler->run($sql, [$post_id]);
-            if($stmt->rowCount() > 0 ) {
+            if ($stmt->rowCount() > 0) {
                 return $stmt->fetchAll();
             } else {
                 return false;
             }
         } catch (\Throwable $e) {
-            return "Database Error: ". $e->getMessage();
+            return "Database Error: " . $e->getMessage();
         }
     }
+
 
     public function totalComments($post_id) {
         $sql = "SELECT COUNT(*) as total FROM comments WHERE post_id = ?";
         try {
             $stmt = $this->dbHandler->run($sql, [$post_id]);
+            $result = $stmt->fetch();
+            return ($result) ? $result['total'] : 0;
+        } catch (\Throwable $e) {
+            return "Database Error: ". $e->getMessage();
+        }
+    }
+    
+    public function total() {
+        $sql = "SELECT COUNT(*) as total FROM comments";
+        try {
+            $stmt = $this->dbHandler->run($sql);
             $result = $stmt->fetch();
             return ($result) ? $result['total'] : 0;
         } catch (\Throwable $e) {

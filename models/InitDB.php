@@ -19,8 +19,10 @@ class InitDB{
         try {
             $this->dbConnect = new \PDO($dsn, $this->username, $this->password);
             $this->dbConnect->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+
         } catch (\PDOException $e) {
             //SEND THIS TO AUDIT SERVICE FOR LOGGING
+
         }
         
     }
@@ -52,6 +54,8 @@ class InitDB{
 /* 
 
 USAGE
+
+
 
 $unitTest=new InitDB(DB_OPTIONS[2], DB_OPTIONS[0],DB_OPTIONS[1],DB_OPTIONS[3]);
 $stmt=$unitTest->run("SELECT * FROM commission_tb WHERE id <= ?", [5]);
